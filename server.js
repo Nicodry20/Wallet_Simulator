@@ -41,7 +41,7 @@ app.get('/api/balance', authenticate, async (req, res) => {
   }
 });
 
-// Crea el servidor HTTPS
-https.createServer(httpsOptions, app).listen(port, () => {
-  console.log(`Servidor HTTPS ejecutándose en el puerto ${port}`);
+// Usa HTTP (Render proporciona HTTPS automáticamente)
+app.listen(port, () => {
+  console.log(`Servidor escuchando en el puerto ${port}`);
 });
