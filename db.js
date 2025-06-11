@@ -1,21 +1,21 @@
-// db.js
 const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-  user: process.env.PG_USER,         // postgres
-  host: process.env.PG_HOST,         // localhost
-  database: process.env.PG_DATABASE, // wallet_db
-  password: process.env.PG_PASSWORD, // 1199khma
-  port: process.env.PG_PORT,         // 5432
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
+  ssl: { rejectUnauthorized: false }, // Importante para conexión segura desde Render
 });
 
-// Comprobación de conexión (opcional)
+// Prueba de conexión
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {
-    console.error('Error conectando a PostgreSQL:', err.message);
+    console.error('❌ Error conectando a PostgreSQL:', err.message);
   } else {
-    console.log('Conexión a PostgreSQL establecida:', res.rows[0]);
+    console.log('✅ Conexión a PostgreSQL exitosa:', res.rows[0]);
   }
 });
 
