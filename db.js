@@ -13,7 +13,7 @@ const pool = new Pool({
 // Prueba de conexión
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {
-    console.error('❌ Error conectando a PostgreSQL:', err.message);
+    console.error('❌ Error conectando a PostgreSQL:', err.stack);
   } else {
     console.log('✅ Conexión a PostgreSQL exitosa:', res.rows[0]);
   }
