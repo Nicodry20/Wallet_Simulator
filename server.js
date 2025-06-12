@@ -157,7 +157,3 @@ app.post('/contacts', authenticate, async (req, res) => {
 app.listen(port, () => {
   console.log(`✅ Servidor corriendo en puerto ${port}`);
 });
-
-import loginHandler from './routes/login.js';
-
-app.post('/login', loginHandler);

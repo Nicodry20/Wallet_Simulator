@@ -2,7 +2,7 @@ import pool from '../db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export default async function handler (req, res ) {
+{
   const { email, password } = req.body;
 
   try {
