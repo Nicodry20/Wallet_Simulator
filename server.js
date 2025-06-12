@@ -1,7 +1,8 @@
-const express = require('express');
-const pool = require('./db');
-const helmet = require('helmet');
-require('dotenv').config();
+import express from 'express';
+import pool from './db.js';
+import helmet from 'helmet';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
