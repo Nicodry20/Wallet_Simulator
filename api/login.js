@@ -2,7 +2,7 @@ import pool from '../db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export default async function handler(req, res) {
+export default async function handler (req, res ) {
   const { email, password } = req.body;
 
   try {
@@ -18,4 +18,7 @@ export default async function handler(req, res) {
   } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
+}
+
+export default async function (req, res) {
 }
