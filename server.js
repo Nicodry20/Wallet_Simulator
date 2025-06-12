@@ -197,3 +197,4 @@ app.get('/api/transactions', authenticate, async (req, res) => {
   );
   res.json(result.rows);
 });
+
