@@ -32,3 +32,7 @@ app.get('/api/balance', authenticate, async (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
+
+app.get('/', (req, res) => {
+  res.send('🚀 API de Wallet Simulator funcionando correctamente!');
+});
