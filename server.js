@@ -17,13 +17,16 @@ app.get('/', (req, res) => {
   res.send('🚀 API de Wallet funcionando correctamente!');
 });
 
-/* 🔐 Registro */
 app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password)
     return res.status(400).json({ error: 'Faltan datos' });
 
   try {
+    const exists = await pool.query('SELECT 1 FROM users WHERE email = $1', [email]);
+    if (exists.rows.length > 0)
+      return res.status(409).json({ error: 'Email ya registrado' });
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(
       'INSERT INTO users (name, email, password, balance) VALUES ($1, $2, $3, $4)',
@@ -36,7 +39,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-/* 🔑 Login */
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -57,7 +59,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-/* 👤 Perfil */
 app.get('/profile', authenticate, async (req, res) => {
   const result = await pool.query(
     'SELECT name, email, balance FROM users WHERE id = $1',
@@ -68,7 +69,6 @@ app.get('/profile', authenticate, async (req, res) => {
   res.json(result.rows[0]);
 });
 
-/* 💰 Recarga */
 app.post('/recharge', authenticate, async (req, res) => {
   const { amount } = req.body;
   if (!amount || amount <= 0)
@@ -85,7 +85,6 @@ app.post('/recharge', authenticate, async (req, res) => {
   }
 });
 
-/* 💸 Transferencia */
 app.post('/transfer', authenticate, async (req, res) => {
   const { to, amount } = req.body;
   const sender_id = req.user.id;
@@ -121,7 +120,6 @@ app.post('/transfer', authenticate, async (req, res) => {
   }
 });
 
-/* 📜 Transacciones */
 app.get('/transactions', authenticate, async (req, res) => {
   const result = await pool.query(
     `SELECT t.id, t.amount, t.sender_id, t.receiver_id, t.created_at,
@@ -136,7 +134,6 @@ app.get('/transactions', authenticate, async (req, res) => {
   res.json(result.rows);
 });
 
-/* 📇 Contactos */
 app.get('/contacts', authenticate, async (req, res) => {
   const result = await pool.query(
     'SELECT contact_id, alias FROM contacts WHERE owner_id = $1',
