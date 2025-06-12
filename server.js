@@ -101,3 +101,6 @@ app.listen(port, () => {
 
 import loginHandler from './api/login.js';
 app.post('/login', loginHandler);
+
+import registerHandler from './api/register.js';
+app.post('/register', registerHandler);
