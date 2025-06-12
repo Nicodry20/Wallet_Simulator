@@ -49,10 +49,11 @@ app.post('/login', async (req, res) => {
 
     const user = result.rows[0];
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ error: 'Contraseña incorrecta' });
+    if (!match)
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '2h' });
-    res.json({ token });
+    res.status(200).json({ token });
   } catch (error) {
     console.error('Error en login:', error.message);
     res.status(500).json({ error: 'Login fallido' });
