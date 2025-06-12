@@ -8,7 +8,7 @@ export default function authenticate(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = decoded; // contiene { id }
     next();
   } catch {
     res.status(403).json({ error: 'Token inválido' });
