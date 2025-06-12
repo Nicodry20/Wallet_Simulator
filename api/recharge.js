@@ -1,8 +1,8 @@
 import pool from '../db.js';
-import auth from './middleware/auth.js';
+import auth from './auth.js';
 
 export default async function handler(req, res) {
-  await new Promise((resolve, reject) => auth(req, res, resolve));
+  await new Promise(resolve => auth(req, res, resolve));
   const { amount } = req.body;
 
   if (amount <= 0) return res.status(400).json({ error: 'Monto inválido' });

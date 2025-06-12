@@ -3,8 +3,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
-
   const { email, password } = req.body;
 
   try {
@@ -17,7 +15,7 @@ export default async function handler(req, res) {
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '2h' });
     res.status(200).json({ token });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 }

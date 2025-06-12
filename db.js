@@ -1,5 +1,8 @@
-const { Pool } = require('pg');
-require('dotenv').config();
+import dotenv from 'dotenv';
+import pkg from 'pg';
+dotenv.config();
+
+const { Pool } = pkg;
 
 const pool = new Pool({
   user: process.env.PG_USER,
@@ -7,7 +10,7 @@ const pool = new Pool({
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
-  ssl: { rejectUnauthorized: false }, // Importante para conexión segura desde Render
+  ssl: { rejectUnauthorized: false },
 });
 
 // Prueba de conexión
@@ -19,4 +22,4 @@ pool.query('SELECT NOW()', (err, res) => {
   }
 });
 
-module.exports = pool;
+export default pool;
