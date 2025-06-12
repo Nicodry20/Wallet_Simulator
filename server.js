@@ -4,8 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-const authenticate = (req, res, next) => { './auth.js' };
-
+import authenticate from './middleware/auth.js';
 dotenv.config();
 
 const app = express();
