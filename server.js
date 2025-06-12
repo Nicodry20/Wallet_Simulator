@@ -158,3 +158,4 @@ app.post('/contacts', authenticate, async (req, res) => {
 app.listen(port, () => {
   console.log(`✅ Servidor corriendo en puerto ${port}`);
 });
+
