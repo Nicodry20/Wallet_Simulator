@@ -12,6 +12,17 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(helmet());
 
+// Rutas externas
+const profileRoutes = require('./api/profile');
+app.use('/api/profile', profileRoutes);
+
+const balanceRoutes = require('./api/balance');
+app.use('/api/balance', balanceRoutes);
+
+const tutorialRoutes = require('./api/tutorials');
+app.use('/api/tutorials', tutorialRoutes);
+
+// Home
 app.get('/', (req, res) => {
   res.send('🚀 API de Wallet Simulator funcionando correctamente!');
 });
@@ -24,18 +35,15 @@ app.post('/api/register', async (req, res) => {
     await pool.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, hash]);
     res.json({ message: 'Usuario registrado' });
   } catch (error) {
-    console.error('🔥 Error en registro:', error);
     res.status(500).json({ error: 'Error en el registro' });
   }
 });
-
 
 // Login
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-
     if (result.rows.length === 0) return res.status(401).json({ error: 'Usuario no encontrado' });
 
     const user = result.rows[0];
@@ -45,24 +53,8 @@ app.post('/api/login', async (req, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (error) {
-    console.error('🔥 Error en login:', error);
     res.status(500).json({ error: 'Error en el servidor al iniciar sesión' });
   }
-});
-
-
-// Perfil
-app.get('/api/profile', authenticate, async (req, res) => {
-  const result = await pool.query('SELECT name, email, balance FROM users WHERE id = $1', [req.user.id]);
-  if (result.rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
-  res.json(result.rows[0]);
-});
-
-// Balance
-app.get('/api/balance', authenticate, async (req, res) => {
-  const result = await pool.query('SELECT balance FROM users WHERE id = $1', [req.user.id]);
-  if (result.rows.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
-  res.json({ balance: result.rows[0].balance });
 });
 
 // Transferencia
@@ -114,10 +106,7 @@ app.get('/api/transactions', authenticate, async (req, res) => {
 
 // Contactos
 app.get('/api/contacts', authenticate, async (req, res) => {
-  const result = await pool.query(
-    'SELECT contact_id, alias FROM contacts WHERE owner_id = $1',
-    [req.user.id]
-  );
+  const result = await pool.query('SELECT contact_id, alias FROM contacts WHERE owner_id = $1', [req.user.id]);
   res.json(result.rows);
 });
 
@@ -125,10 +114,7 @@ app.post('/api/contacts', authenticate, async (req, res) => {
   const { contact_id, alias } = req.body;
   if (!contact_id || !alias) return res.status(400).json({ error: 'Faltan datos' });
 
-  await pool.query(
-    'INSERT INTO contacts (owner_id, contact_id, alias) VALUES ($1, $2, $3)',
-    [req.user.id, contact_id, alias]
-  );
+  await pool.query('INSERT INTO contacts (owner_id, contact_id, alias) VALUES ($1, $2, $3)', [req.user.id, contact_id, alias]);
   res.json({ message: 'Contacto agregado' });
 });
 
@@ -136,7 +122,6 @@ app.post('/api/contacts', authenticate, async (req, res) => {
 app.post('/api/recharge', authenticate, async (req, res) => {
   const { amount } = req.body;
   if (!amount || amount <= 0) return res.status(400).json({ error: 'Monto inválido' });
-
   await pool.query('UPDATE users SET balance = balance - $1 WHERE id = $2', [amount, req.user.id]);
   await pool.query('INSERT INTO transactions (sender_id, receiver_id, amount) VALUES ($1, NULL, $2)', [req.user.id, amount]);
   res.json({ message: 'Recarga de transporte registrada' });
@@ -164,6 +149,7 @@ app.get('/api/notifications', authenticate, async (req, res) => {
   res.json(result.rows);
 });
 
+// Iniciar servidor
 app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto ${port}`);
+  console.log(`🚀 Servidor escuchando en el puerto ${port}`);
 });
