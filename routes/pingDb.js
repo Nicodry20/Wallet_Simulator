@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../db'); // ajustá el path si pusiste db.js en otra carpeta
+const pool = require('../db');
 
 const router = express.Router();
 
